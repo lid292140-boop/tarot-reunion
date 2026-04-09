@@ -64,9 +64,10 @@ window.TarotResult = {
 
     // 操作按钮
     html += '<div class="result-actions">' +
-      '<button class="btn-outline" onclick="TarotApp.showStep(\'welcome\')">重新占卜</button>' +
-      '<button class="btn-gold" onclick="TarotApp.showStep(\'chat\')">和我聊聊</button>' +
-    '</div>';
+        '<button class="btn-outline" onclick="TarotApp.showStep(\'welcome\')">重新占卜</button>' +
+        '<button class="btn-gold" onclick="TarotApp.showStep(\'chat\')">闺蜜安慰室</button>' +
+        '<button class="btn-outline" onclick="TarotApp.showStep(\'chat\',\'ex\')">模拟前任语气</button>' +
+      '</div>';
 
     document.getElementById('resultContainer').innerHTML = html;
     setTimeout(function() {
