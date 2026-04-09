@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>命运之轮 · 复合塔罗</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/welcome.css">
+  <link rel="stylesheet" href="css/form.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <link rel="stylesheet" href="css/result.css">
+  <link rel="stylesheet" href="css/chat.css">
+</head>
+<body>
+  <!-- Step 1: 欢迎页 -->
+  <section id="step-welcome" class="step active">
+    <div class="stars" id="stars"></div>
+    <div class="rain" id="rain"></div>
+    <div class="welcome-content">
+      <div class="tarot-icon">&#9883;</div>
+      <h1 class="title">命运之轮 · 复合塔罗</h1>
+      <p class="subtitle">让星辰与塔罗为你指引方向</p>
+      <p class="welcome-desc">复合从来不是靠眼泪和长篇小作文，而是靠精准的"算计"和势均力敌的心理拉扯。停止无效内耗，让客观数据与塔罗神谕，为你算出真实的翻盘底牌。</p>
+      <button class="btn-gold" onclick="TarotApp.showStep('form')">开始占卜</button>
+    </div>
+  </section>
+
+  <!-- Step 2: 信息输入 -->
+  <section id="step-form" class="step">
+    <div class="form-container">
+      <h2 class="section-title">请告诉我你们的故事</h2>
+      <form id="tarot-form" onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>你的星座</label>
+            <select id="myZodiac" required></select>
+          </div>
+          <div class="form-group">
+            <label>对方的星座</label>
+            <select id="partnerZodiac" required></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>在一起多久（月）</label>
+            <input type="number" id="duration" min="1" max="240" required>
+          </div>
+          <div class="form-group">
+            <label>分手几次</label>
+            <select id="breakupCount">
+              <option value="1">1次</option>
+              <option value="2">2次</option>
+              <option value="3">3次</option>
+              <option value="4">4次</option>
+              <option value="5">5次及以上</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>分手多久了（月）</label>
+            <input type="number" id="separation" min="0" max="120" required>
+          </div>
+          <div class="form-group">
+            <label>之前每周见几次</label>
+            <select id="meetFreq">
+              <option value="1">1次</option>
+              <option value="2">2次</option>
+              <option value="3">3次</option>
+              <option value="5">5次以上</option>
+              <option value="7">几乎每天</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>分手主要原因（可多选）</label>
+          <div class="reason-tags" id="reasonTags"></div>
+        </div>
+        <button type="button" class="btn-gold" onclick="TarotForm.submit()">
+          翻开命运之牌
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Step 3: 塔罗抽牌 -->
+  <section id="step-cards" class="step">
+    <!-- 洗牌仪式阶段 -->
+    <div id="shufflePhase" class="ritual-phase">
+      <div class="ritual-icon">&#9883;</div>
+      <h2 class="section-title">命运之牌正在为你洗牌</h2>
+      <p class="ritual-text">闭上眼睛，在心中默念对方的名字三遍...</p>
+      <div class="shuffle-cards" id="shuffleCards"></div>
+      <p class="ritual-text fade-slow" id="ritualHint">感受命运的指引...</p>
+    </div>
+    <!-- 选牌阶段 -->
+    <div id="drawPhase" class="ritual-phase hidden">
+      <h2 class="section-title">选择三张命运之牌</h2>
+      <p class="card-hint">第 <span id="drawCount">1</span> 张 · 代表「<span id="drawPos">过去</span>」</p>
+      <p class="card-hint-sub">用直觉选择，不要犹豫，第一感觉就是命运的指引</p>
+      <div class="card-spread" id="cardSpread"></div>
+      <button class="btn-gold hidden" id="btnReveal" onclick="TarotApp.showStep('result')">
+        揭示命运
+      </button>
+    </div>
+  </section>
+
+  <!-- Step 4: 结果展示 -->
+  <section id="step-result" class="step">
+    <div class="result-container" id="resultContainer"></div>
+  </section>
+
+  <!-- Step 5: 虚拟陪伴 -->
+  <section id="step-chat" class="step">
+    <div class="chat-container">
+      <div class="chat-header">
+        <span class="chat-avatar">&#9883;</span>
+        <span>塔罗守护者</span>
+      </div>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-area">
+        <div class="api-key-bar" id="apiKeyBar">
+          <input type="password" id="apiKeyInput" placeholder="输入Claude API Key（可选）">
+          <button onclick="TarotChat.setKey()">确认</button>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="说说你的心事..."
+                 onkeydown="if(event.key==='Enter')TarotChat.send()">
+          <button onclick="TarotChat.send()">发送</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/app.js"></script>
+  <script src="js/tarot-data.js"></script>
+  <script src="js/zodiac.js"></script>
+  <script src="js/horoscope.js"></script>
+  <script src="js/form.js"></script>
+  <script src="js/card-draw.js"></script>
+  <script src="js/algorithm.js"></script>
+  <script src="js/result.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>
